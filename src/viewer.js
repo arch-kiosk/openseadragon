@@ -2938,6 +2938,12 @@ function getTileSourceImplementation( viewer, tileSource, imgOptions, successCal
             if (tileSource.ajaxWithCredentials === undefined) {
                 tileSource.ajaxWithCredentials = viewer.ajaxWithCredentials;
             }
+            if (tileSource.loadTilesWithAjax === undefined) {
+                tileSource.loadTilesWithAjax = viewer.loadTilesWithAjax;
+            }
+            if (tileSource.ajaxHeaders === undefined) {
+                tileSource.ajaxHeaders = viewer.ajaxHeaders;
+            }
 
             if ( $.isFunction( tileSource.getTileUrl ) ) {
                 //Custom tile source
