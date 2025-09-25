@@ -106,6 +106,7 @@ $.ImageTileSource = class extends $.TileSource {
             image.crossOrigin = this.crossOriginPolicy;
         }
         if (this.ajaxWithCredentials) {
+            // this does not exist on HTMLImageElement
             image.useCredentials = this.ajaxWithCredentials;
         }
 
@@ -137,7 +138,26 @@ $.ImageTileSource = class extends $.TileSource {
             });
         });
 
-        image.src = url;
+        if (this.loadTilesWithAjax && this.ajaxWithCredentials && this.ajaxHeaders) {
+            super.downloadTileStart({
+                src: url,
+                loadWithAjax: true,
+                ajaxHeaders: this.ajaxHeaders,
+                ajaxWithCredentials: this.ajaxWithCredentials,
+                crossOriginPolicy: this.crossOriginPolicy,
+                fail: (errMessage, request) => {
+                    _this.raiseEvent("open-failed", {
+                        message: `Error loading image per Ajax at ${url}`,
+                        source: url
+                    });
+                },
+                finish: (blb, request) => {
+                    image.src = URL.createObjectURL(blb);
+                }
+            });
+        } else {
+            image.src = url;
+        }
     }
     /**
      * @function
